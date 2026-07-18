@@ -1,29 +1,33 @@
 # PerfectMemory Examples
 
-## sample_page_A5.pdf
+## sample_page_v03.pdf (or .b64)
 
-A sample A5 page generated for testing the registration / dewarping marks.
+New sample matching **PAPER_SPEC v0.3**:
 
-**Contents:**
-- 4 high-contrast corner registration markers (custom ArUco-inspired patterns with unique IDs 0-3 for TL/TR/BL/BR)
-- QR-code style placeholder (top-right) with short ID
-- Light isometric triangular dots (5 mm) across the writing area
-- Thin outer border
-- Human-readable ID and footer
-- Title/date guide line
+- Thin continuous high-contrast border frame
+- Stretched small markers + distinctive L-corner treatments around the *entire* perimeter
+- Modest ~15.5 mm integrated QR-style zone (top-right, border flows around it)
+- Enhanced isometric triangular dots (base lattice + stronger super-lattice every ~15-20 mm)
+- Maximized clean writing area
+- Human-readable short ID in footer
 
-**How to use:**
-1. Download and print at **100% scale** (actual size) on A5 or A4 paper (scale carefully if needed).
-2. Write notes and diagrams.
-3. Optionally scrunch the page, unfold it, and take a quick phone photo from an angle.
-4. The corner markers + QR area are designed to provide control points for non-rigid dewarping (TPS / mesh) even on wrinkled paper.
+**This is the design that addresses the "out of scale" feedback**: registration is distributed around the border instead of large corner boxes, the QR is smaller and integrated, and the isometric dots provide the surface-wide control points for non-rigid dewarping of scrunched pages.
 
-**Note:** This sample was generated with a pure-Python (reportlab + PIL) version that uses custom fiducials instead of full OpenCV ArUco + qrcode library, so that it could be produced in constrained environments. The full generator in `tools/generate_page.py` produces real ArUco (DICT_4X4_50) + proper high-ECC QR codes when the dependencies are available.
+### How to obtain the PDF
+1. Preferred: run the generator
+   ```bash
+   python tools/generate_page_v03.py --notebook NB01 --page 1 -o examples/sample_page_v03.pdf
+   ```
+2. If a .b64 file is present:
+   ```bash
+   python -c "
+import base64, pathlib
+p = pathlib.Path('examples/sample_page_v03.pdf.b64')
+pathlib.Path('examples/sample_page_v03.pdf').write_bytes(base64.b64decode(p.read_text()))
+print('Decoded')
+"
+   ```
 
-Generate more with:
-```bash
-pip install reportlab qrcode[pil] opencv-python-headless pillow numpy
-python tools/generate_page.py --notebook NB01 --page 1 -o mypage.pdf
-```
+Print at **100% actual size**, write, scrunch/unfold, photograph, and test detection + TPS dewarp.
 
-Or use the pure fallback (to be added).
+See `docs/PAPER_SPEC.md` for the full rationale.
